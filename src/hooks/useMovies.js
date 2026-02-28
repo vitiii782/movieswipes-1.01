@@ -17,10 +17,6 @@ export const useMovies = () => {
     const { filters, mediaType, currentUser } = useMovieStore();
 
     const fetchMovies = useCallback(async (currentFilters, currentType) => {
-        if (!currentUser) {
-            setLoading(false);
-            return;
-        }
         setLoading(true);
         try {
             // Standard discovery paging
@@ -34,7 +30,7 @@ export const useMovies = () => {
                 results = await tmdbService.getMovies(1, currentFilters, currentType);
             }
 
-            const currentSeen = currentUser.seenIds[currentType] || [];
+            const currentSeen = currentUser?.seenIds?.[currentType] || [];
 
             // Deduplicate and filter seen
             const filteredResults = results.filter(movie => !currentSeen.includes(movie.id));
