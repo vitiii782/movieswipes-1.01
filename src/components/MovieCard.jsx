@@ -54,7 +54,7 @@ const MovieCard = ({ movie, onSwipe, onInfoClick, active, index }) => {
             dragMomentum={false}
             onDragEnd={handleDragEnd}
             whileTap={active ? { scale: 1.01 } : {}}
-            className="w-full max-w-[400px] h-[600px] cursor-grab active:cursor-grabbing"
+            className="w-full max-w-[400px] h-[600px] cursor-grab active:cursor-grabbing touch-none"
         >
             <div
                 className="card relative w-full h-full flex flex-col justify-end p-6 overflow-hidden bg-dark-card border border-white/10 shadow-2xl rounded-[32px] bg-cover bg-center"
@@ -106,7 +106,7 @@ const MovieCard = ({ movie, onSwipe, onInfoClick, active, index }) => {
                         <span className="text-gray-300 text-xs font-semibold">{movie.year}</span>
                     </div>
 
-                    <h2 className="text-3xl font-black leading-tight mb-2 drop-shadow-lg tracking-tight">
+                    <h2 className="text-3xl font-black leading-tight mb-2 tracking-tight" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                         {movie.title}
                     </h2>
 

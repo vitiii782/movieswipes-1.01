@@ -215,8 +215,8 @@ function App() {
             {showDaily && <DailyRecommendation onClose={() => setShowDaily(false)} onWatch={(movie) => { handleInfoClick(movie); setShowDaily(false); }} />}
             {selectedMovie && <MovieDetails movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
 
-            <div className="fixed -top-24 -left-24 w-96 h-96 bg-[#FF4458]/10 blur-[120px] pointer-events-none rounded-full" />
-            <div className="fixed -bottom-24 -right-24 w-96 h-96 bg-[#FF6B81]/10 blur-[120px] pointer-events-none rounded-full" />
+            <div className="hidden md:block fixed -top-24 -left-24 w-96 h-96 bg-[#FF4458]/10 blur-[120px] pointer-events-none rounded-full" />
+            <div className="hidden md:block fixed -bottom-24 -right-24 w-96 h-96 bg-[#FF6B81]/10 blur-[120px] pointer-events-none rounded-full" />
         </div>
     )
 }
