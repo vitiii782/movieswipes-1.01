@@ -3,7 +3,7 @@ import { X, Heart, Info, RotateCcw } from 'lucide-react'
 
 const SwipeButtons = ({ onNope, onLike, onInfo, onUndo }) => {
     return (
-        <div className="flex items-center justify-center gap-4 md:gap-8 pb-4 lg:pb-10 w-full max-w-[400px] mt-auto pb-safe">
+        <div className="flex items-center justify-center gap-4 md:gap-8 pb-4 lg:pb-10 w-full max-w-[400px] pb-safe">
             <button
                 onClick={onUndo}
                 className="p-4 rounded-full bg-white/5 border border-white/10 text-orange-400 hover:scale-110 active:scale-95 transition-all shadow-lg backdrop-blur-md"
