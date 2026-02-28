@@ -156,7 +156,7 @@ function App() {
                     />
 
                     <div className="flex-1 flex overflow-hidden">
-                        <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden mt-20 lg:mt-0 lg:ml-0 transition-all duration-500">
+                        <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden pt-20 pb-4 lg:py-0 lg:ml-0 transition-all duration-500">
                             {loading && (!movies || movies.length === 0) ? (
                                 <div className="flex flex-col items-center gap-4 animate-pulse">
                                     <Loader2 className="animate-spin text-[#FF4458]" size={48} />
