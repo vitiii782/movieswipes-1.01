@@ -110,9 +110,13 @@ const MovieCard = ({ movie, onSwipe, onInfoClick, active, index }) => {
                         <span className="text-gray-300 text-[10px] font-bold tracking-widest uppercase opacity-60">{movie.year}</span>
                     </div>
 
-                    <h2 className="text-xl sm:text-2xl font-black leading-none mb-2 tracking-tight line-clamp-1" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                    <h2 className="text-xl sm:text-2xl font-black leading-none mb-1.5 tracking-tight line-clamp-1" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                         {movie.title}
                     </h2>
+
+                    <p className="text-[12px] text-gray-400 font-medium mb-3 line-clamp-1 leading-relaxed opacity-80">
+                        {movie.description}
+                    </p>
 
                     <div className="flex items-center gap-4 text-[11px] font-black text-gray-300 pb-1 uppercase tracking-wider">
                         <div className="flex items-center gap-1 text-accent-gold">
