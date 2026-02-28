@@ -37,11 +37,11 @@ body {
 }
 
 .cardContainer {
-  width: 90vw;
-  max-width: 340px;
-  height: 55vh;
-  min-height: 400px;
-  max-height: 550px;
+  width: 85vw;
+  max-width: 280px;
+  height: 50vh;
+  min-height: 380px;
+  max-height: 480px;
 }
 
 .card {
