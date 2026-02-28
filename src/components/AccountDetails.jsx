@@ -19,7 +19,7 @@ const AccountDetails = ({ onClose }) => {
     const totalSeen = seenMoviesCount + seenTvCount;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F0F1A]/90 backdrop-blur-sm p-6 overflow-hidden">
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-[#0F0F1A]/90 backdrop-blur-sm p-6 overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}

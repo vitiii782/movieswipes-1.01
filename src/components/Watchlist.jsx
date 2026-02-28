@@ -8,7 +8,7 @@ const Watchlist = ({ onClose, onMovieClick, inline = false }) => {
 
     const containerClasses = inline
         ? "h-full flex flex-col bg-[#16213E]/50 backdrop-blur-xl border-l border-white/10 w-96 hidden lg:flex"
-        : "fixed inset-0 z-50 bg-dark-bg/95 flex flex-col animate-pop"
+        : "fixed inset-0 z-[1100] bg-dark-bg/95 flex flex-col animate-pop"
 
     return (
         <div className={containerClasses}>

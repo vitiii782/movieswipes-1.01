@@ -37,7 +37,7 @@ const Auth = ({ onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0F0F1A] p-6 overflow-hidden">
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-[#0F0F1A] p-6 overflow-hidden">
             {/* Background Decorative Elements */}
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-tinder-gradient opacity-20 blur-[120px] rounded-full animate-pulse" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-600 opacity-20 blur-[120px] rounded-full animate-pulse" />

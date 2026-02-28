@@ -19,7 +19,7 @@ const Header = ({ showWatchlist, onToggleWatchlist }) => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 z-[100] flex items-center justify-between px-4 sm:px-6 pointer-events-none">
+    <header className="fixed top-0 left-0 right-0 h-20 z-[1000] flex items-center justify-between px-4 sm:px-6 pointer-events-none">
       {/* Logo */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}

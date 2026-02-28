@@ -15,7 +15,7 @@ const LogoutConfirm = () => {
     };
 
     return (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-[#0F0F1A]/90 backdrop-blur-sm p-6 overflow-hidden animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-[#0F0F1A]/90 backdrop-blur-sm p-6 overflow-hidden animate-in fade-in duration-200">
             <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
