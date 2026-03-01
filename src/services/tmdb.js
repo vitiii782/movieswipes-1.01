@@ -21,9 +21,10 @@ export const tmdbService = {
         language: 'en-US',
         page,
         sort_by: 'vote_average.desc',
-        'vote_average.gte': filters.minRating || 5.0,
-        'vote_count.gte': (filters.genreId === 27) ? 50 : 100,
+        'vote_average.gte': filters.minRating || 7.0,
+        'vote_count.gte': 500,
         with_genres: filters.genreId || '',
+        with_original_language: 'en|ja|ko|fr|es|de|it',
         certification_country: filters.certificationCountry || '',
         certification: filters.certification || '',
         ...(type === 'movie'

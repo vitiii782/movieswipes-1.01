@@ -10,7 +10,7 @@ export const useMovieStore = create(
       users: [], // Array of { id, username, email, password, watchlist, seenIds, disliked }
       filters: {
         genreId: '',
-        minRating: 5,
+        minRating: 7,
         year: '',
         language: 'en-US',
         trending: false,
@@ -128,7 +128,7 @@ export const useMovieStore = create(
         const base = {
           filters: {
             genreId: '',
-            minRating: 5,
+            minRating: 7,
             year: '',
             language: 'en-US',
             trending: false,
