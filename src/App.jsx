@@ -111,9 +111,9 @@ function App() {
 
         if (genre.id === HORROR_ID) {
             releaseDateGte = '2000-01-01';
-            // Removing certification filters to avoid empty results
-            certificationCountry = '';
-            certification = '';
+            // Restrict to 16+ movies for Horror
+            certificationCountry = 'DE';
+            certification = '16';
         }
         if (genre.id === ROMANCE_ID || genre.id === FAMILY_ID) releaseDateGte = '';
         if (genre.id === 'all' || genre.id === 'tv') releaseDateGte = '';
