@@ -42,8 +42,8 @@ const CategorySelection = ({ onSelect }) => {
                     genreId: typeof genre.id === 'number' ? genre.id : '',
                     trending: genre.id === 'all',
                 };
-                const movies = await tmdbService.getMovies(1, filters, genre.id === 'tv' ? 'tv' : 'movie');
-                previewData[genre.id] = movies.slice(0, 3);
+                const response = await tmdbService.getMovies(1, filters, genre.id === 'tv' ? 'tv' : 'movie');
+                previewData[genre.id] = response.results.slice(0, 3);
             });
 
             await Promise.all(fetchPromises);

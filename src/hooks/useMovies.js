@@ -14,42 +14,40 @@ const preloadImage = (src) => {
 export const useMovies = () => {
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [knownTotalPages, setKnownTotalPages] = useState(1);
     const { filters, mediaType, currentUser } = useMovieStore();
 
-    const fetchMovies = useCallback(async (currentFilters, currentType) => {
+    const fetchMovies = useCallback(async (currentFilters, currentType, startPage) => {
         setLoading(true);
         try {
-            // Standard discovery paging
-            const maxPage = 20;
-            const randomPage = Math.floor(Math.random() * maxPage) + 1;
+            // Always start at page 1 for initial load, then randomize within known bounds
+            const page = startPage != null ? startPage :
+                (knownTotalPages > 1 ? Math.floor(Math.random() * Math.min(knownTotalPages, 20)) + 1 : 1);
 
-            let results = await tmdbService.getMovies(randomPage, currentFilters, currentType);
+            const response = await tmdbService.getMovies(page, currentFilters, currentType);
+            let results = response.results || [];
+            const newTotalPages = response.totalPages || 1;
 
-            // Fallback for empty random pages
-            if (results.length === 0 && randomPage > 1) {
-                results = await tmdbService.getMovies(1, currentFilters, currentType);
+            setKnownTotalPages(newTotalPages);
+
+            // Safety: if random page came back empty but page1 might have results, fallback
+            if (results.length === 0 && page > 1) {
+                const fallback = await tmdbService.getMovies(1, currentFilters, currentType);
+                results = fallback.results || [];
             }
 
             const currentSeen = currentUser?.seenIds?.[currentType] || [];
 
-            // Deduplicate and filter seen
             const filteredResults = results.filter(movie => !currentSeen.includes(movie.id));
+            // Sort highest rating first (the card at the top of the stack is the last item)
             const sorted = [...filteredResults].sort((a, b) => (b.rating || 0) - (a.rating || 0));
 
-            // Avoid adding duplicates if they're already in the current stack or within the fetched batch
             setMovies(prev => {
                 const existingIds = new Set(prev.map(m => m.id));
-                const uniqueNewMovies = [];
-                for (const m of sorted.reverse()) {
-                    if (!existingIds.has(m.id)) {
-                        existingIds.add(m.id);
-                        uniqueNewMovies.push(m);
-                    }
-                }
-                return [...uniqueNewMovies, ...prev];
+                const uniqueNew = sorted.filter(m => !existingIds.has(m.id)).reverse();
+                return [...uniqueNew, ...prev];
             });
 
-            // Preload posters
             sorted.forEach(movie => {
                 if (movie.poster) { const img = new Image(); img.src = movie.poster; }
             });
@@ -58,29 +56,24 @@ export const useMovies = () => {
         } finally {
             setLoading(false);
         }
-    }, [currentUser, filters, mediaType]);
+    }, [currentUser, knownTotalPages]);
 
-    // Initial fetch and fetch when filters or mediaType change
+    // When filters/mediaType change, reset and start fresh from page 1
     useEffect(() => {
         setMovies([]);
-        fetchMovies(filters, mediaType);
+        setKnownTotalPages(1);
+        fetchMovies(filters, mediaType, 1);
     }, [filters, mediaType]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Handle running out of movies
     const popMovie = useCallback(() => {
         let popped = null;
         setMovies(prev => {
             if (prev.length === 0) return prev;
-
             const newMovies = [...prev];
             popped = newMovies.pop();
-
-            // AGGRESSIVE PRE-FETCH: If stack is low, fetch next batch
             if (newMovies.length < 5 && !loading) {
-                // We use a small timeout to let the popping state settle
                 setTimeout(() => fetchMovies(filters, mediaType), 10);
             }
-
             return newMovies;
         });
         return popped;

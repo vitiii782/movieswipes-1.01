@@ -21,8 +21,9 @@ export const tmdbService = {
         language: 'en-US',
         page,
         sort_by: 'vote_average.desc',
-        'vote_average.gte': filters.minRating || 7.0,
-        'vote_count.gte': 500,
+        'vote_average.gte': filters.minRating ?? 6.0,
+        'vote_count.gte': 100,
+
         with_genres: filters.genreId || '',
         with_original_language: 'en|ja|ko|fr|es|de|it',
         with_keywords: filters.keywords || '',
@@ -55,10 +56,13 @@ export const tmdbService = {
         results = results.filter(m => m.releaseDate && new Date(m.releaseDate) > now);
       }
 
-      return results;
+      return {
+        results,
+        totalPages: response.data.total_pages || 1
+      };
     } catch (error) {
       console.error(`Error fetching ${type}:`, error);
-      return [];
+      return { results: [], totalPages: 0 };
     }
   },
 

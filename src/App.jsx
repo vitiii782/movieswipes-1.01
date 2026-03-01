@@ -56,9 +56,7 @@ function App() {
         }
     }, [watchlist?.length])
 
-    /* if (!currentUser) {
-        return <Auth />
-    } */
+    // No conditional returns before hooks
 
     const handleInfoClick = async (movie) => {
         if (!movie) return;
@@ -114,9 +112,9 @@ function App() {
 
         if (genre.id === HORROR_ID) {
             releaseDateGte = '2000-01-01';
-            // Inject "Actually Scary" keywords: Haunted House, Possession, Supernatural, Paranormal
-            keywords = '3358|10183|9663|10115';
-            minRating = 6.2; // Include fan favorites like 'The Visit'
+            // Broad horror pool — sorted high→low rating by the API
+            keywords = '';
+            minRating = 5.0;
         }
         if (genre.id === ROMANCE_ID || genre.id === FAMILY_ID) releaseDateGte = '';
         if (genre.id === 'all' || genre.id === 'tv') releaseDateGte = '';
