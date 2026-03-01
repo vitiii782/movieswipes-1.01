@@ -22,9 +22,9 @@ export const tmdbService = {
         page,
         sort_by: 'vote_average.desc',
         'vote_average.gte': filters.minRating ?? 6.0,
-        'vote_count.gte': 100,
-
+        'vote_count.gte': filters.minVoteCount ?? 100,
         with_genres: filters.genreId || '',
+        without_genres: filters.withoutGenres || '',
         with_original_language: 'en|ja|ko|fr|es|de|it',
         with_keywords: filters.keywords || '',
         certification_country: filters.certificationCountry || '',

@@ -109,12 +109,16 @@ function App() {
 
         let minRating = null;
         let keywords = '';
+        let withoutGenres = '';
+        let minVoteCount = 100;
 
         if (genre.id === HORROR_ID) {
             releaseDateGte = '2000-01-01';
-            // Broad horror pool — sorted high→low rating by the API
+            // Exclude kids' genres: Family (10751) and Animation (16)
+            withoutGenres = '10751,16';
             keywords = '';
             minRating = 5.0;
+            minVoteCount = 150;
         }
         if (genre.id === ROMANCE_ID || genre.id === FAMILY_ID) releaseDateGte = '';
         if (genre.id === 'all' || genre.id === 'tv') releaseDateGte = '';
@@ -129,6 +133,8 @@ function App() {
             certification,
             minRating,
             keywords,
+            withoutGenres,
+            minVoteCount,
         });
         setShowCategories(false);
     };
