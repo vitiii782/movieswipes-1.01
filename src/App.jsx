@@ -113,7 +113,7 @@ function App() {
         let minVoteCount = 100;
 
         if (genre.id === HORROR_ID) {
-            releaseDateGte = '2000-01-01';
+            releaseDateGte = '2010-01-01';
             // Exclude kids' genres: Family (10751) and Animation (16)
             withoutGenres = '10751,16';
             keywords = '';
