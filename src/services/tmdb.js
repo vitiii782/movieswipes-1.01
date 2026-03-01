@@ -28,6 +28,7 @@ export const tmdbService = {
         with_original_language: 'en|ja|ko|fr|es|de|it',
         with_keywords: filters.keywords || '',
         certification_country: filters.certificationCountry || '',
+        'certification.gte': filters.certificationGte || '',
         certification: filters.certification || '',
         ...(type === 'movie'
           ? {

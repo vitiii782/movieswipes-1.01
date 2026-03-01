@@ -106,6 +106,7 @@ function App() {
         let releaseDateGte = '2000-01-01'; // default
         let certificationCountry = '';
         let certification = '';
+        let certificationGte = '';
 
         let minRating = null;
         let keywords = '';
@@ -113,12 +114,15 @@ function App() {
         let minVoteCount = 100;
 
         if (genre.id === HORROR_ID) {
-            releaseDateGte = '2010-01-01';
+            releaseDateGte = '2013-01-01';
             // Exclude kids' genres: Family (10751) and Animation (16)
             withoutGenres = '10751,16';
             keywords = '';
             minRating = 5.0;
-            minVoteCount = 150;
+            minVoteCount = 50;
+            // 16+ certification (PG-13 and above in US system)
+            certificationCountry = 'US';
+            certificationGte = 'PG-13';
         }
         if (genre.id === ROMANCE_ID || genre.id === FAMILY_ID) releaseDateGte = '';
         if (genre.id === 'all' || genre.id === 'tv') releaseDateGte = '';
@@ -131,6 +135,7 @@ function App() {
             releaseDateGte,
             certificationCountry,
             certification,
+            certificationGte,
             minRating,
             keywords,
             withoutGenres,
