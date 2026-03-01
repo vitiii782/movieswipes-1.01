@@ -4,9 +4,7 @@ import { persist } from 'zustand/middleware';
 export const useMovieStore = create(
   persist(
     (set, get) => ({
-      watchlist: [],
-      disliked: [],
-      currentUser: null, // { id, username, email }
+      currentUser: null, // { id, username, email, watchlist, seenIds, disliked }
       users: [], // Array of { id, username, email, password, watchlist, seenIds, disliked }
       filters: {
         genreId: '',
@@ -112,6 +110,7 @@ export const useMovieStore = create(
         if (!state.currentUser) return state;
         const updatedUsers = state.users.map(u => {
           if (u.id === state.currentUser.id) {
+            if (u.disliked.includes(id)) return u;
             return { ...u, disliked: [...u.disliked, id] };
           }
           return u;
@@ -135,10 +134,12 @@ export const useMovieStore = create(
           }
         };
         if (state.currentUser) {
+          const updatedUsers = state.users.map(u => u.id === state.currentUser.id ? { ...u, seenIds: { movie: [], tv: [] } } : u);
+          const updatedUser = updatedUsers.find(u => u.id === state.currentUser.id);
           return {
             ...base,
-            users: state.users.map(u => u.id === state.currentUser.id ? { ...u, seenIds: { movie: [], tv: [] } } : u),
-            currentUser: { ...state.currentUser, seenIds: { movie: [], tv: [] } }
+            users: updatedUsers,
+            currentUser: updatedUser
           };
         }
         return base;
