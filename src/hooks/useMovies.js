@@ -7,20 +7,19 @@ export const useMovies = () => {
     const [loading, setLoading] = useState(true);
     const { filters, mediaType, currentUser } = useMovieStore();
 
-    // Track which pages we've already fetched this session so we don't repeat pages
+    // Refs for tracking state without causing re-renders
     const nextPageRef = useRef(1);
-    const totalPagesRef = useRef(null); // null = not yet known
+    const totalPagesRef = useRef(null);
     const isFetchingRef = useRef(false);
-    // Track ALL IDs shown this session (in-stack + already swiped) to prevent duplicates
+    // Tracks ALL IDs shown this session to prevent duplicates
     const sessionSeenRef = useRef(new Set());
 
     const fetchMore = useCallback(async (currentFilters, currentType) => {
         if (isFetchingRef.current) return;
         isFetchingRef.current = true;
-        setLoading(true);
 
         try {
-            // If we've exhausted all pages, wrap around but keep sessionSeen so no repeats
+            // Wrap around if we've finished all pages
             if (totalPagesRef.current !== null && nextPageRef.current > totalPagesRef.current) {
                 nextPageRef.current = 1;
             }
@@ -30,14 +29,12 @@ export const useMovies = () => {
             const results = response.results || [];
             const totalPages = response.totalPages || 1;
 
-            // Store total pages after first fetch
             totalPagesRef.current = totalPages;
             nextPageRef.current = page + 1;
 
-            // Also grab the persistent seenIds from the logged-in user
             const persistedSeen = currentUser?.seenIds?.[currentType] || [];
 
-            // Filter out anything we've shown this session OR the user already swiped before
+            // Filter: skip anything already shown this session or previously swiped
             const newMovies = results.filter(movie => {
                 if (sessionSeenRef.current.has(movie.id)) return false;
                 if (persistedSeen.includes(movie.id)) return false;
@@ -45,17 +42,16 @@ export const useMovies = () => {
                 return true;
             });
 
-            // Sort highest-rated first. Cards are rendered bottom-to-top so we reverse for the stack.
+            // Sort highest-rated first. Stack renders top-last so reverse for correct display order.
             const sorted = [...newMovies].sort((a, b) => (b.rating || 0) - (a.rating || 0));
-
             setMovies(prev => [...sorted.reverse(), ...prev]);
 
-            // Preload posters
+            // Preload poster images in background (no await, pure perf boost)
             sorted.forEach(movie => {
                 if (movie.poster) { const img = new Image(); img.src = movie.poster; }
             });
 
-            // If this page had nothing new for the user, try the next page immediately
+            // If this page yielded nothing new, skip to next page immediately
             if (newMovies.length === 0 && totalPages > 1) {
                 isFetchingRef.current = false;
                 await fetchMore(currentFilters, currentType);
@@ -65,17 +61,68 @@ export const useMovies = () => {
             console.error('Fetch error:', error);
         } finally {
             isFetchingRef.current = false;
-            setLoading(false);
         }
     }, [currentUser]);
 
-    // Reset everything when filters or mediaType change, then start fresh from page 1
+    // When entering a category, pick a random starting page for variety,
+    // then immediately pre-fill the stack with 2 pages for lag-free swiping.
     useEffect(() => {
-        setMovies([]);
-        nextPageRef.current = 1;
-        totalPagesRef.current = null;
-        sessionSeenRef.current = new Set();
-        fetchMore(filters, mediaType);
+        let cancelled = false;
+
+        const initialize = async () => {
+            setMovies([]);
+            nextPageRef.current = 1;
+            totalPagesRef.current = null;
+            sessionSeenRef.current = new Set();
+            isFetchingRef.current = false;
+            setLoading(true);
+
+            // First: fetch page 1 to learn totalPages
+            const first = await tmdbService.getMovies(1, filters, mediaType);
+            if (cancelled) return;
+
+            const totalPages = first.totalPages || 1;
+            totalPagesRef.current = totalPages;
+
+            // Pick a random starting page so sequence is different each time
+            const startPage = totalPages > 1
+                ? Math.floor(Math.random() * Math.min(totalPages, 20)) + 1
+                : 1;
+
+            // Mark page 1 results + random start page in session
+            const persistedSeen = currentUser?.seenIds?.[mediaType] || [];
+            const firstResults = (first.results || []).filter(m => {
+                if (persistedSeen.includes(m.id)) return false;
+                sessionSeenRef.current.add(m.id);
+                return true;
+            });
+
+            const sorted1 = [...firstResults].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            setMovies(sorted1.reverse());
+            sorted1.forEach(m => { if (m.poster) { const img = new Image(); img.src = m.poster; } });
+
+            // Fetch the random starting page as second batch (for variety)
+            if (startPage !== 1 && !cancelled) {
+                const second = await tmdbService.getMovies(startPage, filters, mediaType);
+                if (cancelled) return;
+                const secondResults = (second.results || []).filter(m => {
+                    if (sessionSeenRef.current.has(m.id)) return false;
+                    if (persistedSeen.includes(m.id)) return false;
+                    sessionSeenRef.current.add(m.id);
+                    return true;
+                });
+                const sorted2 = [...secondResults].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                setMovies(prev => [...sorted2.reverse(), ...prev]);
+                sorted2.forEach(m => { if (m.poster) { const img = new Image(); img.src = m.poster; } });
+            }
+
+            // Set next page to continue sequentially after the random page
+            nextPageRef.current = startPage === 1 ? 2 : startPage + 1;
+            setLoading(false);
+        };
+
+        initialize();
+        return () => { cancelled = true; };
     }, [filters, mediaType]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const popMovie = useCallback(() => {
@@ -84,9 +131,9 @@ export const useMovies = () => {
             if (prev.length === 0) return prev;
             const next = [...prev];
             popped = next.pop();
-            // Pre-fetch next batch when stack is running low
-            if (next.length < 8 && !isFetchingRef.current) {
-                setTimeout(() => fetchMore(filters, mediaType), 10);
+            // Pre-fetch when stack is getting low — threshold of 15 for buffer
+            if (next.length < 15 && !isFetchingRef.current) {
+                setTimeout(() => fetchMore(filters, mediaType), 0);
             }
             return next;
         });
@@ -95,7 +142,6 @@ export const useMovies = () => {
 
     const pushMovie = useCallback((movie) => {
         setMovies(prev => [...prev, movie]);
-        // Remove from session seen so the undo doesn't "lose" the movie
         sessionSeenRef.current.delete(movie.id);
     }, []);
 
