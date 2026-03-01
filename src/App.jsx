@@ -110,9 +110,10 @@ function App() {
         let certification = '';
 
         if (genre.id === HORROR_ID) {
-            releaseDateGte = '2015-01-01';
-            certificationCountry = 'US';
-            certification = 'R'; // R-rated (17+) is closest to 16+ for horror
+            releaseDateGte = '2000-01-01';
+            // Removing certification filters to avoid empty results
+            certificationCountry = '';
+            certification = '';
         }
         if (genre.id === ROMANCE_ID || genre.id === FAMILY_ID) releaseDateGte = '';
         if (genre.id === 'all' || genre.id === 'tv') releaseDateGte = '';
