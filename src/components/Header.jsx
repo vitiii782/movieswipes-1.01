@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Film, User, LogOut, Settings, LogIn, UserPlus } from 'lucide-react';
+import { Film, User, LogOut, Settings, LogIn, UserPlus, Search } from 'lucide-react';
 import { useMovieStore } from '../store/useMovieStore';
 
 const Header = ({ showWatchlist, onToggleWatchlist }) => {
-  const { currentUser, setShowCategories, setShowAuth, setShowAccountDetails, setShowLogoutConfirm } = useMovieStore();
+  const { currentUser, setShowCategories, setShowAuth, setShowAccountDetails, setShowLogoutConfirm, setShowMovieFinder } = useMovieStore();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -20,20 +20,33 @@ const Header = ({ showWatchlist, onToggleWatchlist }) => {
 
   return (
     <header className="fixed top-0 left-0 right-0 h-20 z-[1000] flex items-center justify-between px-4 sm:px-6 pointer-events-none">
-      {/* Logo */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="flex items-center gap-2 pointer-events-auto cursor-pointer group"
-        onClick={() => setShowCategories(true)}
-      >
-        <div className="w-10 h-10 rounded-xl bg-tinder-gradient flex items-center justify-center shadow-lg shadow-rose-500/20 group-hover:scale-110 transition-transform">
-          <Film className="text-white" size={20} />
-        </div>
-        <h1 className="text-xl font-black text-white tracking-tighter uppercase italic hidden sm:block">
-          MovieSwipes
-        </h1>
-      </motion.div>
+      {/* Search / AI Finder Button (Left) */}
+      <div className="flex items-center gap-4 pointer-events-auto">
+        <motion.button
+          whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowMovieFinder(true)}
+          className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 text-rose-500 flex items-center justify-center backdrop-blur-md transition-colors shadow-lg"
+          title="MovieFinder AI"
+        >
+          <Search size={20} />
+        </motion.button>
+
+        {/* Logo */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 cursor-pointer group"
+          onClick={() => setShowCategories(true)}
+        >
+          <div className="w-10 h-10 rounded-xl bg-tinder-gradient flex items-center justify-center shadow-lg shadow-rose-500/20 group-hover:scale-110 transition-transform">
+            <Film className="text-white" size={20} />
+          </div>
+          <h1 className="text-xl font-black text-white tracking-tighter uppercase italic hidden sm:block">
+            MovieSwipes
+          </h1>
+        </motion.div>
+      </div>
 
       {/* User Profile & Actions */}
       <div className="flex items-center gap-3 pointer-events-auto">

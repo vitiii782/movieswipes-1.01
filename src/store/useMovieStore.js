@@ -19,12 +19,14 @@ export const useMovieStore = create(
       showAuth: false,
       showAccountDetails: false,
       showLogoutConfirm: false,
+      showMovieFinder: false,
       mediaType: 'movie',
 
       setShowCategories: (show) => set({ showCategories: show }),
       setShowAuth: (show) => set({ showAuth: show }),
       setShowAccountDetails: (show) => set({ showAccountDetails: show }),
       setShowLogoutConfirm: (show) => set({ showLogoutConfirm: show }),
+      setShowMovieFinder: (show) => set({ showMovieFinder: show }),
       setMediaType: (type) => set({ mediaType: type }),
 
       signUp: (userData) => {

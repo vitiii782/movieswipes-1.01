@@ -114,5 +114,26 @@ export const tmdbService = {
       console.error(`Error fetching ${type} genres:`, error);
       return [];
     }
+  },
+
+  searchMovies: async (query, type = 'movie') => {
+    try {
+      const response = await tmdbApi.get(`/search/${type}`, {
+        params: { query, language: 'en-US' }
+      });
+
+      return (response.data.results || []).map(item => ({
+        id: item.id,
+        title: item.title || item.name || 'Unknown Title',
+        poster: item.poster_path ? `${IMAGE_BASE_URL}${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Poster',
+        rating: Number(item.vote_average) || 0,
+        year: (item.release_date || item.first_air_date) ? new Date(item.release_date || item.first_air_date).getFullYear() : 'N/A',
+        description: item.overview || '',
+        mediaType: type,
+      }));
+    } catch (error) {
+      console.error(`Error searching ${type}:`, error);
+      return [];
+    }
   }
 };

@@ -11,6 +11,7 @@ import CategorySelection from './components/CategorySelection'
 import Auth from './components/Auth'
 import AccountDetails from './components/AccountDetails'
 import LogoutConfirm from './components/LogoutConfirm'
+import MovieFinder from './components/MovieFinder'
 import { useMovies } from './hooks/useMovies'
 import { useMovieStore } from './store/useMovieStore'
 import { tmdbService } from './services/tmdb'
@@ -28,6 +29,9 @@ function App() {
         showAccountDetails,
         setShowAccountDetails,
         showLogoutConfirm,
+        setShowLogoutConfirm,
+        showMovieFinder,
+        setShowMovieFinder,
         updateFilters,
         setMediaType
     } = useMovieStore()
@@ -128,7 +132,7 @@ function App() {
     // Keyboard Shortcuts
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (showWatchlist || showFilters || selectedMovie || showDaily || showCategories) return;
+            if (showWatchlist || showFilters || selectedMovie || showDaily || showCategories || showMovieFinder) return;
             if (!movies || movies.length === 0) return;
 
             const topMovie = movies[movies.length - 1];
@@ -140,7 +144,7 @@ function App() {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [movies, showWatchlist, showFilters, selectedMovie, showDaily, showCategories, lastAction]);
+    }, [movies, showWatchlist, showFilters, selectedMovie, showDaily, showCategories, showMovieFinder, lastAction]);
 
     return (
         <div className="flex flex-col h-[100dvh] bg-[#1A1A2E] text-white overflow-hidden font-sans select-none">
@@ -213,6 +217,7 @@ function App() {
             {showLogoutConfirm && <LogoutConfirm />}
             {showFilters && <FilterMenu onClose={() => setShowFilters(false)} />}
             {showDaily && <DailyRecommendation onClose={() => setShowDaily(false)} onWatch={(movie) => { handleInfoClick(movie); setShowDaily(false); }} />}
+            {showMovieFinder && <MovieFinder onClose={() => setShowMovieFinder(false)} onMovieClick={(movie) => { handleInfoClick(movie); setShowMovieFinder(false); }} />}
             {selectedMovie && <MovieDetails movie={selectedMovie} onClose={() => setSelectedMovie(null)} />}
 
             <div className="hidden md:block fixed -top-24 -left-24 w-96 h-96 bg-[#FF4458]/10 blur-[120px] pointer-events-none rounded-full" />
