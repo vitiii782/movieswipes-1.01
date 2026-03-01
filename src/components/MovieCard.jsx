@@ -12,14 +12,19 @@ const MovieCard = ({ movie, onSwipe, onInfoClick, active, index }) => {
     const nopeOpacity = useTransform(x, [-20, -60], [0, 1]);
 
     const handleDragEnd = (event, info) => {
-        if (info.offset.x > 50) {
+        const velocity = info.velocity.x;
+        const offset = info.offset.x;
+
+        // Thresholds: Offset (min distance) vs Velocity (flick speed)
+        // 80px offset or 500px/s velocity results in a swipe
+        if (offset > 80 || velocity > 500) {
             onSwipe('right', movie);
-        } else if (info.offset.x < -50) {
+        } else if (offset < -80 || velocity < -500) {
             onSwipe('left', movie);
         }
     };
 
-    // Detect if movie is upcoming (future release)
+    // Release release date rules:
     const isUpcoming = useMemo(() =>
         movie.releaseDate && new Date(movie.releaseDate) > new Date(),
         [movie.releaseDate]
@@ -33,31 +38,42 @@ const MovieCard = ({ movie, onSwipe, onInfoClick, active, index }) => {
 
     // Calculate stack effect based on index
     const scale = active ? 1 : 1 - (index * 0.05);
-    const yOffset = active ? 0 : index * -15;
+    const yOffset = active ? 0 : index * -12; // Slightly tighter stack
 
     return (
         <motion.div
             layout={false}
             animate={{
                 scale,
-                y: yOffset
+                y: yOffset,
+                rotate: active ? rotate.get() : 0 // Ensure non-active cards stay flat
             }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+            transition={{
+                type: "spring",
+                stiffness: 400, // Faster reactions
+                damping: 30,    // Less bounce, more "air resistance"
+                mass: 0.8       // Lighter feel
+            }}
+            exit={{
+                x: x.get() > 0 ? 1000 : -1000, // Throw out in the right direction
+                opacity: 0,
+                scale: 0.5,
+                transition: { duration: 0.3, ease: "easeIn" }
+            }}
             style={{
                 x,
                 rotate,
                 opacity: active ? opacity : 1,
                 zIndex: 50 - index,
                 position: 'absolute',
-                willChange: active ? 'transform' : 'auto',
+                willChange: 'transform, opacity',
             }}
             drag={active ? "x" : false}
             dragConstraints={{ left: -1000, right: 1000 }}
-            dragElastic={0.7}
+            dragElastic={0.9} // More elastic feedback
             dragMomentum={false}
             onDragEnd={handleDragEnd}
-            whileTap={active ? { scale: 1.01 } : {}}
+            whileTap={active ? { scale: 1.02 } : {}}
             className="w-full h-full cursor-grab active:cursor-grabbing touch-none"
         >
             <div
