@@ -37,20 +37,18 @@ const Header = ({ showWatchlist, onToggleWatchlist }) => {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-3 cursor-pointer group"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-3 cursor-pointer group pointer-events-auto"
           onClick={() => setShowCategories(true)}
+          title="Home / Categories"
         >
           <div className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden group-hover:scale-110 transition-transform backdrop-blur-md">
-            <img src="/logo.png" alt="MovieSwipe Logo" className="w-full h-full object-cover" />
+            <img src="/logo.png" alt="MovieSwipes Logo" className="w-full h-full object-cover" />
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-xl font-black text-white tracking-tighter uppercase italic leading-none hidden sm:block">
-              MovieSwipe
-            </h1>
-            <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest leading-none mt-1 hidden sm:block">
-              Premium
-            </span>
-          </div>
+          <h1 className="text-xl font-black text-white tracking-tighter uppercase italic hidden sm:block">
+            MovieSwipes
+          </h1>
         </motion.div>
       </div>
 
